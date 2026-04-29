@@ -1,98 +1,174 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import Button from "@/components/ui/button";
+import { Colors } from "@/constants/theme";
+import { useStorage } from "@/hooks/useStorage";
+import { Task } from "@/types/task.type";
+import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback } from "react";
+import {
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    useColorScheme,
+    View,
+} from "react-native";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+export default function Home() {
+    const router = useRouter();
+    const colorScheme = useColorScheme() ?? "light";
+    const theme = Colors[colorScheme];
+    const { data: tasks, refresh } = useStorage<Task[]>("tasks", []);
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    useFocusEffect(
+        useCallback(() => {
+            refresh();
+        }, []),
+    );
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+    const pendingTasks = tasks.filter((t) => !t.isCompleted).length;
+    const completedTasks = tasks.filter((t) => t.isCompleted).length;
+
+    const getTimeGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return "¡Buenos días!";
+        if (hour < 18) return "¡Buenas tardes!";
+        return "¡Buenas noches!";
+    };
+
+    return (
+        <ScrollView className={`flex-1 bg-white`}>
+            <View className="px-6 py-10">
+                <View className="flex-row justify-between items-center mb-8">
+                    <View>
+                        <Text className="text-lg text-neutral-400 font-medium">
+                            {getTimeGreeting()}
+                        </Text>
+                        <Text className="text-4xl font-black text-neutral-900 mt-1">
+                            Tu resumen diario
+                        </Text>
+                    </View>
+                </View>
+
+                <View className="flex-row gap-5 mb-8">
+                    <View className="bg-primary-light flex-1 p-5 gap-2 rounded-3xl justify-center shadow-black shadow-offset-0-4 shadow-opacity-0.1 shadow-radius-12 shadow-elevation-5">
+                        <Ionicons name="time" size={30} color="white" />
+                        <Text className="text-4xl font-bold text-white mt-1">
+                            {pendingTasks}
+                        </Text>
+                        <Text className="text-xl text-white/50 font-medium">
+                            Pendientes
+                        </Text>
+                    </View>
+
+                    <View className="bg-success flex-1 p-5 gap-2 rounded-3xl justify-center shadow-black shadow-offset-0-4 shadow-opacity-0.1 shadow-radius-12 shadow-elevation-5">
+                        <Ionicons
+                            name="checkmark-circle"
+                            size={30}
+                            color="white"
+                        />
+                        <Text className="text-4xl font-bold text-white mt-1">
+                            {completedTasks}
+                        </Text>
+                        <Text className="text-xl text-white/50 font-medium">
+                            Completadas
+                        </Text>
+                    </View>
+                </View>
+
+                <View className="bg-neutral rounded-3xl p-5 mb-8 overflow-hidden relative">
+                    <View className="z-1">
+                        <Text className="text-3xl font-black text-white mt-1">
+                            ¡Mantén el ritmo!
+                        </Text>
+                        <Text className="text-xl text-white/50 font-medium">
+                            Has completado el{" "}
+                            {tasks.length > 0
+                                ? Math.round(
+                                      (completedTasks / tasks.length) * 100,
+                                  )
+                                : 0}
+                            % de tus tareas hoy.
+                        </Text>
+                        <View className="mt-5">
+                            <Button
+                                title="Ver mis tareas"
+                                onPress={() => router.push("/tasks/tasks")}
+                                color="inverted"
+                            />
+                        </View>
+                    </View>
+                </View>
+
+                <View className="mb-5">
+                    <Text className="text-2xl font-black text-neutral-900 mb-5">
+                        Acciones rápidas
+                    </Text>
+                    <View className="flex-row justify-between">
+                        <Pressable
+                            onPress={() => router.push("/tasks/create")}
+                            className="items-center gap-2"
+                        >
+                            <View className="w-[70px] h-[70px] rounded-2xl justify-center items-center bg-secondary-light">
+                                <Ionicons
+                                    name="add"
+                                    size={24}
+                                    color={theme.secondary}
+                                />
+                            </View>
+                            <Text className="text-base font-black text-neutral-900">
+                                Nueva
+                            </Text>
+                        </Pressable>
+
+                        <Pressable className="items-center gap-2">
+                            <View className="w-[70px] h-[70px] rounded-2xl justify-center items-center bg-tertiary-light">
+                                <Ionicons
+                                    name="calendar"
+                                    size={24}
+                                    color={theme.tertiary}
+                                />
+                            </View>
+                            <Text className="text-base font-black text-neutral-900">
+                                Hoy
+                            </Text>
+                        </Pressable>
+
+                        <Pressable className="items-center gap-2">
+                            <View className="w-[70px] h-[70px] rounded-2xl justify-center items-center bg-neutral-light">
+                                <Ionicons
+                                    name="settings"
+                                    size={24}
+                                    color="white"
+                                />
+                            </View>
+                            <Text className="text-base font-black text-neutral-900">
+                                Ajustes
+                            </Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </View>
+        </ScrollView>
+    );
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+const styles = (theme: any) =>
+    StyleSheet.create({
+        actionItem: {
+            alignItems: "center",
+            gap: 10,
+        },
+        actionIcon: {
+            width: 70,
+            height: 70,
+            borderRadius: 20,
+            justifyContent: "center",
+            alignItems: "center",
+        },
+        actionLabel: {
+            fontSize: 14,
+            fontWeight: "700",
+            color: theme.text,
+        },
+    });

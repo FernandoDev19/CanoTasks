@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    /* Primary */
+    --color-primary: #4f46e5;
+    --color-primary-dark: #3730a3;
+    --color-primary-light: #6760fd;
+
+    /* Secondary */
+    --color-secondary: #06b6d4;
+    --color-secondary-dark: #007c91;
+    --color-secondary-light: #d8f6ff;
+
+    /* Tertiary */
+    --color-tertiary: #f43f5e;
+    --color-tertiary-dark: #9f1239;
+    --color-tertiary-light: #ff8792;
+
+    /* Neutral */
+    --color-neutral: #0f172a;
+    --color-neutral-dark: #263238;
+    --color-neutral-medium: #546e7a;
+    --color-neutral-light: #283044;
+    --color-neutral-lightest: #cfd8dc;
+    --color-neutral-white: #ffffff;
+
+    /* Error */
+    --color-error: #ff5252;
+    --color-error-dark: #d32f2f;
+    --color-error-light: #ffebee;
+
+    /* Success */
+    --color-success: #10b981;
+    --color-success-dark: #059669;
+    --color-success-light: #d1fae5;
+
+    /* Warning */
+    --color-warning: #ff9800;
+    --color-warning-dark: #e65100;
+    --color-warning-light: #fff3e0;
+
+    /* Backgrounds */
+    --color-background-light: #f5f7fa;
+    --color-background-dark: #0d1117;
+    --color-background-card-light: #ffffff;
+    --color-background-card-dark: #161b22;
+
+    /* Text */
+    --color-text-base-light: #0f172a;
+    --color-text-base-dark: #ffffff;
+
+    /* Typography */
+    --font-family-body: "Nunito", system-ui, sans-serif;
+}
