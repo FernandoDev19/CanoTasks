@@ -14,7 +14,7 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="tasks/tasks"
+                name="(tasks)/tasks"
                 options={{
                     title: "Tasks",
                     tabBarIcon: ({ color, size }) => (
@@ -24,7 +24,7 @@ export default function TabLayout() {
             />
 
             <Tabs.Screen
-                name="tasks/create"
+                name="(tasks)/create"
                 options={{
                     href: null,
                 }}

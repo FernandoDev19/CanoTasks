@@ -23,7 +23,7 @@ export default function Tasks() {
     const completedCount = tasks.filter((t) => t.isCompleted).length;
 
     const handleAddTask = () => {
-        router.push("/tasks/create");
+        router.push("./create");
     };
 
     useFocusEffect(
@@ -68,13 +68,7 @@ export default function Tasks() {
                     </View>
                 )}
                 renderItem={({ item }) => {
-                    return (
-                        <TaskItem
-                            key={item.id}
-                            task={item}
-                            onComplete={handleComplete}
-                        />
-                    );
+                    return <TaskItem task={item} onComplete={handleComplete} />;
                 }}
                 keyExtractor={(item) => item.id}
                 ListFooterComponent={() =>

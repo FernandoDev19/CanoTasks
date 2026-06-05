@@ -1,11 +1,11 @@
 {
     "expo": {
         "name": "CanoTasks",
-        "slug": "cano-tasks",
+        "slug": "tasks",
         "version": "1.0.0",
         "orientation": "portrait",
         "icon": "./assets/images/icon.png",
-        "scheme": "cano-tasks",
+        "scheme": "tasks",
         "userInterfaceStyle": "automatic",
         "newArchEnabled": true,
         "ios": {
